@@ -15,7 +15,6 @@
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .modal-enter { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        /* المنطقة السرية للمدير */
         .admin-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; cursor: pointer; z-index: 50; opacity: 0; }
     </style>
 </head>
@@ -44,7 +43,7 @@
         const { useState, useEffect } = React;
 
         const Icon = ({ name, cls = "" }) => {
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name]);
+            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name, cls]);
             return <i data-lucide={name} className={cls}></i>;
         };
 
@@ -56,10 +55,9 @@
             const [allFiles, setAllFiles] = useState([]);
             const [openFileUrl, setOpenFileUrl] = useState(null);
             
-            // حالة نظام تسجيل الدخول
             const [showLogin, setShowLogin] = useState(false);
             const [passInput, setPassInput] = useState("");
-            const ADMIN_PASSWORD = "hmd_admin_2026"; // يمكنك تغيير كلمة السر هنا
+            const ADMIN_PASSWORD = "hmd_admin_2026";
 
             const handleLoginSubmit = (e) => {
                 e.preventDefault();
@@ -84,14 +82,19 @@
             }, []);
 
             const subjects = [
-                { n: 'اللغة العربية', i: 'book-a', c: 'from-blue-500 to-blue-600', d: 'قواعد، تعبير، أدب' },
+                { n: 'اللغة العربية', i: 'book-text', c: 'from-blue-500 to-blue-600', d: 'قواعد، تعبير، أدب' },
                 { n: 'الرياضيات', i: 'calculator', c: 'from-purple-500 to-purple-600', d: 'جبر، هندسة، حساب' },
-                { n: 'اللغة الفرنسية', i: 'flag', c: 'from-pink-500 to-pink-600', d: 'قواعد، تعبير، قراءة' },
-                { n: 'العلوم الفيزيائية', i: 'atom', c: 'from-green-500 to-green-600', d: 'فيزياء وكيمياء' },
-                { n: 'التربية الإسلامية', i: 'book-open', c: 'from-emerald-500 to-emerald-600', d: 'قرآن، حديث، فقه' },
-                { n: 'الاجتماعيات', i: 'globe', c: 'from-orange-500 to-orange-600', d: 'تاريخ، جغرافيا' },
-                { n: 'اللغة الإنجليزية', i: 'languages', c: 'from-indigo-500 to-indigo-600', d: 'قواعد، محادثة' },
-                { n: 'الإعلام الآلي', i: 'monitor', c: 'from-cyan-500 to-cyan-600', d: 'برمجة، شبكات' }
+                { n: 'العلوم الفيزيائية', i: 'atom', c: 'from-cyan-500 to-blue-600', d: 'فيزياء وكيمياء' },
+                { n: 'علوم الطبيعة والحياة', i: 'microscope', c: 'from-green-500 to-emerald-600', d: 'بيولوجيا، جيولوجيا' },
+                { n: 'اللغة الفرنسية', i: 'languages', c: 'from-pink-500 to-rose-600', d: 'Grammaire, Conjugaison' },
+                { n: 'اللغة الإنجليزية', i: 'globe', c: 'from-indigo-500 to-blue-700', d: 'Grammar, Vocabulary' },
+                { n: 'الاجتماعيات', i: 'map', c: 'from-orange-500 to-amber-600', d: 'تاريخ وجغرافيا' },
+                { n: 'التربية الإسلامية', i: 'book-open', c: 'from-emerald-500 to-green-600', d: 'قرآن، حديث، فقه' },
+                { n: 'التربية المدنية', i: 'users', c: 'from-red-500 to-orange-600', d: 'حقوق، واجبات، مؤسسات' },
+                { n: 'الإعلام الآلي', i: 'monitor', c: 'from-slate-500 to-slate-700', d: 'برمجة، شبكات' },
+                { n: 'اللغة الأمازيغية', i: 'feather', c: 'from-yellow-500 to-orange-500', d: 'Tamaziɣt' },
+                { n: 'التربية الفنية', i: 'palette', c: 'from-fuchsia-500 to-purple-600', d: 'رسم وتشكيل' },
+                { n: 'التربية الموسيقية', i: 'music', c: 'from-violet-500 to-indigo-600', d: 'نوتات، ألحان' }
             ];
 
             const types = [
@@ -144,23 +147,13 @@
 
             if (v === 'home') return (
                 <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 relative">
-                    {/* المنطقة السرية - أقصى اليسار فوق */}
                     <div className="admin-trigger" onClick={() => setShowLogin(true)}></div>
-
-                    {/* نافذة تسجيل الدخول المنبثقة */}
                     {showLogin && (
                         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
                             <div className="glass max-w-sm w-full p-8 rounded-[35px] modal-enter border-t-2 border-indigo-500">
                                 <h3 className="text-xl font-black text-center mb-6">منطقة المدير 🔐</h3>
                                 <form onSubmit={handleLoginSubmit} className="space-y-4">
-                                    <input 
-                                        type="password" 
-                                        placeholder="أدخل كلمة السر" 
-                                        className="w-full p-4 bg-white/10 rounded-2xl border border-white/20 text-white outline-none focus:border-indigo-500 text-center"
-                                        autoFocus
-                                        value={passInput}
-                                        onChange={(e) => setPassInput(e.target.value)}
-                                    />
+                                    <input type="password" placeholder="أدخل كلمة السر" className="w-full p-4 bg-white/10 rounded-2xl border border-white/20 text-white outline-none focus:border-indigo-500 text-center" autoFocus value={passInput} onChange={(e) => setPassInput(e.target.value)} />
                                     <div className="flex gap-2">
                                         <button type="submit" className="flex-1 bg-indigo-600 p-3 rounded-xl font-bold">دخول</button>
                                         <button type="button" onClick={() => setShowLogin(false)} className="bg-white/10 p-3 rounded-xl font-bold">إلغاء</button>
@@ -169,40 +162,30 @@
                             </div>
                         </div>
                     )}
-
                     <div className="max-w-7xl mx-auto pt-12 text-center">
                         <div className="inline-block glass rounded-full px-6 py-2 mb-6">
                             <span className="text-purple-300 text-sm font-semibold">📚 مكتبتك التعليمية الشاملة - HMD</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-12 italic tracking-tighter">
-                            تفوّقك يبدأ من هنا
-                        </h1>
-
+                        <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-12 italic tracking-tighter">تفوّقك يبدأ من هنا</h1>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto mb-16">
                             {[
                                 { l: 'طالب مستفيد', v: '+5K', i: 'users', c: 'bg-orange-500' },
                                 { l: 'تحميل شهري', v: '+10K', i: 'download', c: 'bg-green-500' },
-                                { l: 'مادة دراسية', v: '8', i: 'book', c: 'bg-pink-500' },
-                                { l: 'ملف متاح', v: allFiles.length > 0 ? `+${allFiles.length}` : '500+', i: 'files', c: 'bg-blue-500' }
+                                { l: 'مادة دراسية', v: subjects.length, i: 'book', c: 'bg-pink-500' },
+                                { l: 'ملف متاح', v: allFiles.length > 0 ? `+${allFiles.length}` : '500+', i: 'file-text', c: 'bg-blue-500' }
                             ].map((s, i) => (
                                 <div key={i} className="glass p-6 rounded-[30px] border border-white/10 group">
-                                    <div className={`${s.c} w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4`}>
-                                        <Icon name={s.i} cls="w-5 h-5 text-white" />
-                                    </div>
+                                    <div className={`${s.c} w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4`}><Icon name={s.i} cls="w-5 h-5 text-white" /></div>
                                     <div className="text-3xl font-black text-white mb-1 tracking-tighter">{s.v}</div>
                                     <div className="text-gray-400 text-xs font-bold uppercase">{s.l}</div>
                                 </div>
                             ))}
                         </div>
-
                         <h2 className="text-2xl font-bold mb-8 text-white">اختر سنتك الدراسية</h2>
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-7xl mx-auto">
                             {['1', '2', '3', '4', 'BEM'].map((l) => (
-                                <button key={l} onClick={() => { setLv(l); setV('subjects'); }}
-                                    className={`glass p-8 rounded-[40px] transition-all transform hover:-translate-y-2 group ${l === 'BEM' ? 'border-yellow-500/50 bg-yellow-500/10 shadow-[0_0_20px_rgba(234,179,8,0.1)]' : 'hover:border-purple-400'}`}>
-                                    <div className={`${l === 'BEM' ? 'bg-gradient-to-tr from-yellow-500 to-red-600 shadow-yellow-500/50' : 'bg-gradient-to-tr from-purple-600 to-pink-500 shadow-purple-500/50'} w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl`}>
-                                        <Icon name={l === 'BEM' ? 'award' : 'graduation-cap'} cls="w-8 h-8 text-white" />
-                                    </div>
+                                <button key={l} onClick={() => { setLv(l); setV('subjects'); }} className={`glass p-8 rounded-[40px] transition-all transform hover:-translate-y-2 group ${l === 'BEM' ? 'border-yellow-500/50 bg-yellow-500/10 shadow-[0_0_20px_rgba(234,179,8,0.1)]' : 'hover:border-purple-400'}`}>
+                                    <div className={`${l === 'BEM' ? 'bg-gradient-to-tr from-yellow-500 to-red-600 shadow-yellow-500/50' : 'bg-gradient-to-tr from-purple-600 to-pink-500 shadow-purple-500/50'} w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl`}><Icon name={l === 'BEM' ? 'award' : 'graduation-cap'} cls="w-8 h-8 text-white" /></div>
                                     <div className="text-xl font-bold italic text-white">{l === 'BEM' ? 'BEM' : `السنة ${l}`}</div>
                                     <div className="text-purple-300 text-[10px] font-bold uppercase">{l === 'BEM' ? 'شهادة التعليم المتوسط' : 'متوسط'}</div>
                                 </button>
@@ -212,19 +195,15 @@
                 </div>
             );
 
-            // أكواد المواد والأنواع والملفات
             if (v === 'subjects') return (
                 <div className="min-h-screen p-6 bg-slate-900">
-                    <div className="max-w-6xl mx-auto text-white">
+                    <div className="max-w-7xl mx-auto text-white">
                         <button onClick={() => setV('home')} className="glass px-6 py-2 rounded-2xl mb-8">← الرئيسية</button>
                         <h1 className="text-4xl font-black mb-10 text-center">المواد التعليمية - {lv === 'BEM' ? 'شهادة BEM' : `السنة ${lv}`}</h1>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                             {subjects.map((s, i) => (
-                                <button key={i} onClick={() => { setSub(s); setV('types'); }}
-                                    className="glass p-6 rounded-[35px] hover:border-blue-400 transition-all text-center group">
-                                    <div className={`bg-gradient-to-br ${s.c} w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl`}>
-                                        <Icon name={s.i} cls="w-8 h-8 text-white" />
-                                    </div>
+                                <button key={i} onClick={() => { setSub(s); setV('types'); }} className="glass p-6 rounded-[35px] hover:border-blue-400 transition-all text-center group">
+                                    <div className={`bg-gradient-to-br ${s.c} w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl`}><Icon name={s.i} cls="w-8 h-8 text-white" /></div>
                                     <h3 className="font-bold text-lg mb-1">{s.n}</h3>
                                     <p className="text-gray-400 text-[10px]">{s.d}</p>
                                 </button>
@@ -241,11 +220,8 @@
                         <h1 className="text-4xl font-black mb-10 italic">أقسام {sub?.n}</h1>
                         <div className="grid md:grid-cols-3 gap-6">
                             {types.map((t, i) => (
-                                <button key={i} onClick={() => { setTyp(t); setV('files'); }}
-                                    className="glass p-8 rounded-[40px] hover:border-cyan-400 transition-all transform hover:scale-105">
-                                    <div className={`bg-gradient-to-tr ${t.c} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl`}>
-                                        <Icon name={t.i} cls="w-8 h-8 text-white" />
-                                    </div>
+                                <button key={i} onClick={() => { setTyp(t); setV('files'); }} className="glass p-8 rounded-[40px] hover:border-cyan-400 transition-all transform hover:scale-105">
+                                    <div className={`bg-gradient-to-tr ${t.c} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl`}><Icon name={t.i} cls="w-8 h-8 text-white" /></div>
                                     <h3 className="text-xl font-black">{t.n}</h3>
                                 </button>
                             ))}
@@ -290,8 +266,8 @@
                                             <h3 className="font-bold text-lg">{f.name}</h3>
                                         </div>
                                         <div className="flex gap-2">
-                                            <button onClick={() => setOpenFileUrl(formatDriveUrl(f.url, 'preview'))} className="bg-white/5 p-3 rounded-xl hover:bg-indigo-600 transition-all"><Icon name="eye" /></button>
-                                            <button onClick={() => window.open(formatDriveUrl(f.url, 'download'), '_blank')} className="bg-green-600/20 text-green-500 p-3 rounded-xl hover:bg-green-600 hover:text-white transition-all"><Icon name="download" /></button>
+                                            <button onClick={() => setOpenFileUrl(formatDriveUrl(f.url, 'preview'))} className="bg-white/5 p-3 rounded-xl hover:bg-indigo-600 transition-all"><Icon name="eye" cls="w-5 h-5" /></button>
+                                            <button onClick={() => window.open(formatDriveUrl(f.url, 'download'), '_blank')} className="bg-green-600/20 text-green-500 p-3 rounded-xl hover:bg-green-600 hover:text-white transition-all"><Icon name="download" cls="w-5 h-5" /></button>
                                         </div>
                                     </div>
                                 ))
