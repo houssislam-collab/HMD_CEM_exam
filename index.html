@@ -1,279 +1,1226 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بنك الفروض - HMD</title>
+    <title>HMD EDUCATIONAL | المنصة التعليمية الأولى</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; margin: 0; padding: 0; background-color: #0f172a; color: white; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .modal-enter { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .admin-trigger { position: absolute; top: 0; left: 0; width: 60px; height: 60px; cursor: pointer; z-index: 50; opacity: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            top: 10%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #ec4899, #f472b6);
+            bottom: 20%;
+            left: 10%;
+            animation-delay: 7s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #3b82f6, #60a5fa);
+            top: 50%;
+            left: 50%;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -30px); }
+            66% { transform: translate(-20px, 20px); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #e9d5ff 50%, #fce7f3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+        .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+        .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+        .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .portal-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 1rem 1rem 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
+        }
+
+        .portal-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+
+        .glass-card:hover .portal-img img {
+            transform: scale(1.1);
+        }
+
+        .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            transition: all 0.3s;
+        }
+
+        .glass-card:hover .icon-wrapper {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(139, 92, 246, 0.25);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-box {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.4s ease-out;
+            position: relative;
+            z-index: 9999;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: white;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .input-field:focus {
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        select.input-field {
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+
+        select.input-field option {
+            background: #1e1b4b;
+            color: white;
+            padding: 0.5rem;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border: none;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.5);
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 32px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            color: #4ade80;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #f87171;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            border: 2px dashed rgba(139, 92, 246, 0.4);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        .file-input-label:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.6);
+        }
+
+        .file-input-label.has-file {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #4ade80;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .upload-option-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-tab {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .upload-tab.active {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-color: transparent;
+            color: white;
+        }
     </style>
 </head>
 <body>
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
     <div id="root"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+        
         const firebaseConfig = {
-          apiKey: "AIzaSyBEcm3zu-Rje7qGFII2hFOD9my0-rYQhbA",
-          authDomain: "hmd-exam-c09ce.firebaseapp.com",
-          projectId: "hmd-exam-c09ce",
-          storageBucket: "hmd-exam-c09ce.firebasestorage.app",
-          messagingSenderId: "224558405314",
-          appId: "1:224558405314:web:48ad7854c973e259000d5b"
+            apiKey: "AIzaSyBEcm3zu-Rje7qGFII2hFOD9my0-rYQhbA",
+            authDomain: "hmd-exam-c09ce.firebaseapp.com",
+            projectId: "hmd-exam-c09ce",
+            storageBucket: "hmd-exam-c09ce.appspot.com",
+            messagingSenderId: "224558405314",
+            appId: "1:224558405314:web:48ad7854c973e259000d5b"
         };
-
+        
         const app = initializeApp(firebaseConfig);
         window.hmdDB = getFirestore(app);
-        window.hmdStore = { collection, addDoc, onSnapshot, query, orderBy };
+        window.hmdStorage = getStorage(app);
+        window.hmdStore = { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp };
+        window.hmdStorageUtils = { ref, uploadBytes, getDownloadURL };
     </script>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useCallback } = React;
 
-        const Icon = ({ name, cls = "" }) => {
-            useEffect(() => { if (window.lucide) window.lucide.createIcons(); }, [name, cls]);
-            return <i data-lucide={name} className={cls}></i>;
+        // كلمة المرور للوصول لنظام الرفع
+        const ADMIN_PASSWORD = "HMD2025";
+
+        const Icon = ({ name, className = "" }) => {
+            const icons = {
+                'book': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                ),
+                'graduation': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z M12 14v6.5" />
+                    </svg>
+                ),
+                'file': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                ),
+                'arrow-right': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                ),
+                'arrow-left': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                ),
+                'sparkles': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                ),
+                'plus': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                ),
+                'lock': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                ),
+                'x': (
+                    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                )
+            };
+            return icons[name] || null;
         };
 
         const App = () => {
-            const [v, setV] = useState('home');
-            const [lv, setLv] = useState(null);
-            const [sub, setSub] = useState(null);
-            const [typ, setTyp] = useState(null);
+            const [view, setView] = useState('landing');
+            const [selYear, setSelYear] = useState(null);
+            const [selBranch, setSelBranch] = useState(null);
+            const [selSubject, setSelSubject] = useState(null);
+            const [selType, setSelType] = useState(null);
             const [allFiles, setAllFiles] = useState([]);
-            const [openFileUrl, setOpenFileUrl] = useState(null);
+            const [isLoading, setIsLoading] = useState(true);
             
-            const [showLogin, setShowLogin] = useState(false);
-            const [passInput, setPassInput] = useState("");
-            const ADMIN_PASSWORD = "hmd_admin_2026";
+            // حالات نظام الرفع
+            const [showPasswordModal, setShowPasswordModal] = useState(false);
+            const [showUploadModal, setShowUploadModal] = useState(false);
+            const [passwordInput, setPasswordInput] = useState('');
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
+            const [uploadMessage, setUploadMessage] = useState({ type: '', text: '' });
+            const [uploadMode, setUploadMode] = useState('file'); // 'file' or 'link'
+            const [selectedFile, setSelectedFile] = useState(null);
+            const [uploadProgress, setUploadProgress] = useState(0);
+            const [isUploading, setIsUploading] = useState(false);
+            const [newFile, setNewFile] = useState({ 
+                name: '', 
+                url: '', 
+                year: '', 
+                subject: '', 
+                type: '' 
+            });
 
-            const handleLoginSubmit = (e) => {
-                e.preventDefault();
-                if (passInput === ADMIN_PASSWORD) {
-                    setV('admin');
-                    setShowLogin(false);
-                    setPassInput("");
+            useEffect(() => {
+                const checkDB = setInterval(() => {
+                    if (window.hmdDB) {
+                        const q = window.hmdStore.query(
+                            window.hmdStore.collection(window.hmdDB, "bank_files"),
+                            window.hmdStore.orderBy("date", "desc")
+                        );
+                        window.hmdStore.onSnapshot(q, (snap) => {
+                            const data = [];
+                            snap.forEach(doc => data.push({id: doc.id, ...doc.data()}));
+                            setAllFiles(data);
+                            setIsLoading(false);
+                        });
+                        clearInterval(checkDB);
+                    }
+                }, 500);
+                return () => clearInterval(checkDB);
+            }, []);
+
+            const handlePasswordSubmit = () => {
+                if (passwordInput === ADMIN_PASSWORD) {
+                    setIsAuthenticated(true);
+                    setShowPasswordModal(false);
+                    setShowUploadModal(true);
+                    setPasswordInput('');
+                    setUploadMessage({ type: '', text: '' });
                 } else {
-                    alert("⚠️ كلمة السر غير صحيحة!");
+                    setUploadMessage({ type: 'error', text: 'كلمة المرور غير صحيحة!' });
+                    setPasswordInput('');
                 }
             };
 
-            useEffect(() => {
-                if (!window.hmdDB) return;
-                const q = window.hmdStore.query(window.hmdStore.collection(window.hmdDB, "bank_files"), window.hmdStore.orderBy("date", "desc"));
-                const unsub = window.hmdStore.onSnapshot(q, (snap) => {
-                    const data = [];
-                    snap.forEach(doc => data.push({id: doc.id, ...doc.data()}));
-                    setAllFiles(data);
-                });
-                return () => unsub();
-            }, []);
-
-            const subjects = [
-                { n: 'اللغة العربية', i: 'book-text', c: 'from-blue-500 to-blue-600', d: 'قواعد، تعبير، أدب' },
-                { n: 'الرياضيات', i: 'calculator', c: 'from-purple-500 to-purple-600', d: 'جبر، هندسة، حساب' },
-                { n: 'العلوم الفيزيائية', i: 'atom', c: 'from-cyan-500 to-blue-600', d: 'فيزياء وكيمياء' },
-                { n: 'علوم الطبيعة والحياة', i: 'microscope', c: 'from-green-500 to-emerald-600', d: 'بيولوجيا، جيولوجيا' },
-                { n: 'اللغة الفرنسية', i: 'languages', c: 'from-pink-500 to-rose-600', d: 'Grammaire, Conjugaison' },
-                { n: 'اللغة الإنجليزية', i: 'globe', c: 'from-indigo-500 to-blue-700', d: 'Grammar, Vocabulary' },
-                { n: 'الاجتماعيات', i: 'map', c: 'from-orange-500 to-amber-600', d: 'تاريخ وجغرافيا' },
-                { n: 'التربية الإسلامية', i: 'book-open', c: 'from-emerald-500 to-green-600', d: 'قرآن، حديث، فقه' },
-                { n: 'التربية المدنية', i: 'users', c: 'from-red-500 to-orange-600', d: 'حقوق، واجبات، مؤسسات' },
-                { n: 'الإعلام الآلي', i: 'monitor', c: 'from-slate-500 to-slate-700', d: 'برمجة، شبكات' },
-                { n: 'اللغة الأمازيغية', i: 'feather', c: 'from-yellow-500 to-orange-500', d: 'Tamaziɣt' },
-                { n: 'التربية الفنية', i: 'palette', c: 'from-fuchsia-500 to-purple-600', d: 'رسم وتشكيل' },
-                { n: 'التربية الموسيقية', i: 'music', c: 'from-violet-500 to-indigo-600', d: 'نوتات، ألحان' }
-            ];
-
-            const types = [
-                { n: 'فروض الفصل 1', i: 'file-edit', c: 'from-blue-500 to-indigo-600' },
-                { n: 'فروض الفصل 2', i: 'file-edit', c: 'from-purple-500 to-pink-600' },
-                { n: 'فروض الفصل 3', i: 'file-edit', c: 'from-orange-500 to-red-600' },
-                { n: 'الاختبارات', i: 'clipboard-check', c: 'from-green-500 to-emerald-600' },
-                { n: 'الملخصات', i: 'book-marked', c: 'from-amber-500 to-orange-600' },
-                { n: 'التمارين', i: 'pen-tool', c: 'from-cyan-500 to-blue-600' }
-            ];
-
-            const formatDriveUrl = (url, type) => {
-                let fileId = "";
-                if (url.includes("/d/")) fileId = url.split("/d/")[1].split("/")[0];
-                else if (url.includes("id=")) fileId = url.split("id=")[1].split("&")[0];
-                return type === 'preview' ? `https://drive.google.com/file/d/${fileId}/preview` : `https://drive.google.com/uc?export=download&id=${fileId}`;
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.type === 'application/pdf') {
+                        setSelectedFile(file);
+                        if (!newFile.name) {
+                            setNewFile({...newFile, name: file.name.replace('.pdf', '')});
+                        }
+                        setUploadMessage({ type: '', text: '' });
+                    } else {
+                        setUploadMessage({ type: 'error', text: 'يرجى اختيار ملف PDF فقط' });
+                        setSelectedFile(null);
+                    }
+                }
             };
 
-            const addFile = async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                await window.hmdStore.addDoc(window.hmdStore.collection(window.hmdDB, "bank_files"), {
-                    name: form.fname.value, url: form.furl.value, lvl: form.flvl.value, sub: form.fsub.value, typ: form.ftyp.value, date: new Date()
-                });
-                alert("✅ تم رفع الملف!"); form.reset();
+            const handleUpload = async () => {
+                // التحقق من الحقول المطلوبة
+                if (!newFile.name || !newFile.year || !newFile.subject || !newFile.type) {
+                    setUploadMessage({ type: 'error', text: 'يرجى ملء كافة الحقول' });
+                    return;
+                }
+
+                // التحقق من وجود ملف أو رابط
+                if (uploadMode === 'file' && !selectedFile) {
+                    setUploadMessage({ type: 'error', text: 'يرجى اختيار ملف PDF' });
+                    return;
+                }
+
+                if (uploadMode === 'link' && !newFile.url) {
+                    setUploadMessage({ type: 'error', text: 'يرجى إدخال رابط الملف' });
+                    return;
+                }
+
+                setIsUploading(true);
+                setUploadProgress(0);
+                
+                try {
+                    let fileUrl = newFile.url;
+
+                    // رفع الملف إذا كان الوضع هو رفع ملف
+                    if (uploadMode === 'file' && selectedFile) {
+                        setUploadMessage({ type: '', text: 'جاري رفع الملف...' });
+                        
+                        const timestamp = Date.now();
+                        const fileName = `pdfs/${timestamp}_${selectedFile.name}`;
+                        const storageRef = window.hmdStorageUtils.ref(window.hmdStorage, fileName);
+                        
+                        // رفع الملف
+                        setUploadProgress(50);
+                        const uploadResult = await window.hmdStorageUtils.uploadBytes(storageRef, selectedFile);
+                        
+                        // الحصول على رابط التحميل
+                        setUploadProgress(75);
+                        fileUrl = await window.hmdStorageUtils.getDownloadURL(uploadResult.ref);
+                        setUploadProgress(90);
+                    }
+
+                    // حفظ البيانات في Firestore
+                    await window.hmdStore.addDoc(
+                        window.hmdStore.collection(window.hmdDB, "bank_files"), 
+                        {
+                            name: newFile.name,
+                            url: fileUrl,
+                            year: newFile.year,
+                            subject: newFile.subject,
+                            type: newFile.type,
+                            date: window.hmdStore.serverTimestamp()
+                        }
+                    );
+
+                    setUploadProgress(100);
+                    setUploadMessage({ type: 'success', text: 'تم رفع الملف بنجاح! ✓' });
+                    setNewFile({ name: '', url: '', year: '', subject: '', type: '' });
+                    setSelectedFile(null);
+                    
+                    setTimeout(() => {
+                        setShowUploadModal(false);
+                        setIsAuthenticated(false);
+                        setUploadMessage({ type: '', text: '' });
+                        setIsUploading(false);
+                        setUploadProgress(0);
+                    }, 2000);
+                } catch (e) {
+                    console.error('Upload error:', e);
+                    setUploadMessage({ type: 'error', text: 'حدث خطأ: ' + e.message });
+                    setIsUploading(false);
+                    setUploadProgress(0);
+                }
             };
 
-            if (v === 'admin') return (
-                <div className="min-h-screen p-6 flex items-center justify-center">
-                    <div className="glass max-w-md w-full p-8 rounded-[40px] shadow-2xl">
-                        <button onClick={() => setV('home')} className="text-gray-400 mb-4 flex items-center gap-2 hover:text-white transition-colors underline">← خروج من لوحة الإدارة</button>
-                        <h2 className="text-2xl font-black mb-6 text-center italic text-indigo-400 underline tracking-widest">إدارة ملفات HMD</h2>
-                        <form onSubmit={addFile} className="space-y-4">
-                            <input name="fname" placeholder="اسم الملف" className="w-full p-4 bg-slate-800 rounded-2xl border border-white/5 text-white outline-none focus:ring-2 focus:ring-indigo-500" required />
-                            <input name="furl" placeholder="رابط Google Drive" className="w-full p-4 bg-slate-800 rounded-2xl border border-white/5 text-white outline-none focus:ring-2 focus:ring-indigo-500" required />
-                            <select name="flvl" className="w-full p-4 bg-slate-800 rounded-2xl text-white outline-none cursor-pointer">
-                                {['1', '2', '3', '4', 'BEM'].map(l => <option key={l} value={l} className="bg-slate-900">{l === 'BEM' ? 'شهادة BEM' : l + ' متوسط'}</option>)}
-                            </select>
-                            <select name="fsub" className="w-full p-4 bg-slate-800 rounded-2xl text-white outline-none cursor-pointer">
-                                {subjects.map(s => <option key={s.n} value={s.n} className="bg-slate-900">{s.n}</option>)}
-                            </select>
-                            <select name="ftyp" className="w-full p-4 bg-slate-800 rounded-2xl text-white outline-none cursor-pointer">
-                                {types.map(t => <option key={t.n} value={t.n} className="bg-slate-900">{t.n}</option>)}
-                            </select>
-                            <button className="w-full bg-indigo-600 hover:bg-indigo-500 py-4 rounded-2xl font-black transition-all shadow-lg active:scale-95">نشر الملف</button>
-                        </form>
-                    </div>
-                </div>
-            );
+            const closeModals = () => {
+                setShowPasswordModal(false);
+                setShowUploadModal(false);
+                setPasswordInput('');
+                setUploadMessage({ type: '', text: '' });
+                setNewFile({ name: '', url: '', year: '', subject: '', type: '' });
+                setSelectedFile(null);
+                setUploadProgress(0);
+                setUploadMode('file');
+                setIsUploading(false);
+            };
 
-            if (v === 'home') return (
-                <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900 relative">
-                    <div className="admin-trigger" onClick={() => setShowLogin(true)}></div>
-                    {showLogin && (
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-                            <div className="glass max-w-sm w-full p-8 rounded-[35px] modal-enter border-t-2 border-indigo-500">
-                                <h3 className="text-xl font-black text-center mb-6">منطقة المدير 🔐</h3>
-                                <form onSubmit={handleLoginSubmit} className="space-y-4">
-                                    <input type="password" placeholder="أدخل كلمة السر" className="w-full p-4 bg-white/10 rounded-2xl border border-white/20 text-white outline-none focus:border-indigo-500 text-center" autoFocus value={passInput} onChange={(e) => setPassInput(e.target.value)} />
-                                    <div className="flex gap-2">
-                                        <button type="submit" className="flex-1 bg-indigo-600 p-3 rounded-xl font-bold">دخول</button>
-                                        <button type="button" onClick={() => setShowLogin(false)} className="bg-white/10 p-3 rounded-xl font-bold">إلغاء</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    )}
-                    <div className="max-w-7xl mx-auto pt-12 text-center">
-                        <div className="inline-block glass rounded-full px-6 py-2 mb-6">
-                            <span className="text-purple-300 text-sm font-semibold">📚 مكتبتك التعليمية الشاملة - HMD</span>
-                        </div>
-                        <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent mb-12 italic tracking-tighter">تفوّقك يبدأ من هنا</h1>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto mb-16">
-                            {[
-                                { l: 'طالب مستفيد', v: '+5K', i: 'users', c: 'bg-orange-500' },
-                                { l: 'تحميل شهري', v: '+10K', i: 'download', c: 'bg-green-500' },
-                                { l: 'مادة دراسية', v: subjects.length, i: 'book', c: 'bg-pink-500' },
-                                { l: 'ملف متاح', v: allFiles.length > 0 ? `+${allFiles.length}` : '500+', i: 'file-text', c: 'bg-blue-500' }
-                            ].map((s, i) => (
-                                <div key={i} className="glass p-6 rounded-[30px] border border-white/10 group">
-                                    <div className={`${s.c} w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4`}><Icon name={s.i} cls="w-5 h-5 text-white" /></div>
-                                    <div className="text-3xl font-black text-white mb-1 tracking-tighter">{s.v}</div>
-                                    <div className="text-gray-400 text-xs font-bold uppercase">{s.l}</div>
-                                </div>
-                            ))}
-                        </div>
-                        <h2 className="text-2xl font-bold mb-8 text-white">اختر سنتك الدراسية</h2>
-                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-7xl mx-auto">
-                            {['1', '2', '3', '4', 'BEM'].map((l) => (
-                                <button key={l} onClick={() => { setLv(l); setV('subjects'); }} className={`glass p-8 rounded-[40px] transition-all transform hover:-translate-y-2 group ${l === 'BEM' ? 'border-yellow-500/50 bg-yellow-500/10 shadow-[0_0_20px_rgba(234,179,8,0.1)]' : 'hover:border-purple-400'}`}>
-                                    <div className={`${l === 'BEM' ? 'bg-gradient-to-tr from-yellow-500 to-red-600 shadow-yellow-500/50' : 'bg-gradient-to-tr from-purple-600 to-pink-500 shadow-purple-500/50'} w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl`}><Icon name={l === 'BEM' ? 'award' : 'graduation-cap'} cls="w-8 h-8 text-white" /></div>
-                                    <div className="text-xl font-bold italic text-white">{l === 'BEM' ? 'BEM' : `السنة ${l}`}</div>
-                                    <div className="text-purple-300 text-[10px] font-bold uppercase">{l === 'BEM' ? 'شهادة التعليم المتوسط' : 'متوسط'}</div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
+            const database = {
+                "1 ابتدائي": ["اللغة العربية", "الرياضيات", "التربية الإسلامية", "التربية المدنية", "التربية العلمية"],
+                "2 ابتدائي": ["اللغة العربية", "الرياضيات", "التربية الإسلامية", "التربية المدنية", "التربية العلمية"],
+                "3 ابتدائي": ["اللغة العربية", "الرياضيات", "الفرنسية", "التربية الإسلامية", "التربية المدنية", "التربية العلمية"],
+                "4 ابتدائي": ["اللغة العربية", "الرياضيات", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية", "التربية العلمية"],
+                "5 ابتدائي": ["اللغة العربية", "الرياضيات", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية", "التربية العلمية"],
+                "1 متوسط": ["اللغة العربية", "الرياضيات", "علوم الطبيعة والحياة", "العلوم الفيزيائية", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية", "المعلوماتية", "اللغة الأمازيغية"],
+                "2 متوسط": ["اللغة العربية", "الرياضيات", "علوم الطبيعة والحياة", "العلوم الفيزيائية", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية", "المعلوماتية", "اللغة الأمازيغية"],
+                "3 متوسط": ["اللغة العربية", "الرياضيات", "علوم الطبيعة والحياة", "العلوم الفيزيائية", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية", "المعلوماتية", "اللغة الأمازيغية"],
+                "4 متوسط": ["اللغة العربية", "الرياضيات", "علوم الطبيعة والحياة", "العلوم الفيزيائية", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية", "المعلوماتية", "اللغة الأمازيغية"],
+                "BEM": ["اللغة العربية", "الرياضيات", "علوم الطبيعة والحياة", "العلوم الفيزيائية", "الفرنسية", "الإنجليزية", "التاريخ والجغرافيا", "التربية الإسلامية", "التربية المدنية"],
+                "1 ثانوي جذع مشترك علوم وتكنولوجيا": ["الرياضيات", "العلوم الفيزيائية", "علوم الطبيعة والحياة", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنجليزية", "التكنولوجيا", "التاريخ والجغرافيا", "التربية الإسلامية", "المعلوماتية"],
+                "1 ثانوي جذع مشترك آداب": ["اللغة العربية", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "الرياضيات", "علوم الطبيعة والحياة", "التربية الإسلامية", "المعلوماتية"],
+                "علوم تجريبية": ["علوم الطبيعة والحياة", "العلوم الفيزيائية", "الرياضيات", "اللغة العربية", "الفلسفة", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "رياضيات": ["الرياضيات", "العلوم الفيزيائية", "علوم الطبيعة والحياة", "اللغة العربية", "الفلسفة", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "تقني رياضي - هندسة ميكانيكية": ["هندسة ميكانيكية", "الرياضيات", "العلوم الفيزيائية", "اللغة العربية", "الفلسفة", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "تقني رياضي - هندسة كهربائية": ["هندسة كهربائية", "الرياضيات", "العلوم الفيزيائية", "اللغة العربية", "الفلسفة", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "تقني رياضي - هندسة مدنية": ["هندسة مدنية", "الرياضيات", "العلوم الفيزيائية", "اللغة العربية", "الفلسفة", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "تقني رياضي - هندسة طرائق": ["هندسة طرائق", "الرياضيات", "العلوم الفيزيائية", "اللغة العربية", "الفلسفة", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "تسيير واقتصاد": ["التسيير المحاسبي والمالي", "الاقتصاد والمناجمنت", "القانون", "الرياضيات", "اللغة العربية", "التاريخ والجغرافيا", "الفلسفة", "اللغة الفرنسية", "اللغة الإنجليزية", "التربية الإسلامية"],
+                "آداب وفلسفة": ["الفلسفة", "اللغة العربية", "التاريخ والجغرافيا", "اللغة الفرنسية", "اللغة الإنجليزية", "الرياضيات", "التربية الإسلامية"],
+                "لغات أجنبية": ["اللغة الثالثة", "اللغة العربية", "اللغة الفرنسية", "اللغة الإنجليزية", "الفلسفة", "التاريخ والجغرافيا", "الرياضيات", "التربية الإسلامية"]
+            };
 
-            if (v === 'subjects') return (
-                <div className="min-h-screen p-6 bg-slate-900">
-                    <div className="max-w-7xl mx-auto text-white">
-                        <button onClick={() => setV('home')} className="glass px-6 py-2 rounded-2xl mb-8">← الرئيسية</button>
-                        <h1 className="text-4xl font-black mb-10 text-center">المواد التعليمية - {lv === 'BEM' ? 'شهادة BEM' : `السنة ${lv}`}</h1>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                            {subjects.map((s, i) => (
-                                <button key={i} onClick={() => { setSub(s); setV('types'); }} className="glass p-6 rounded-[35px] hover:border-blue-400 transition-all text-center group">
-                                    <div className={`bg-gradient-to-br ${s.c} w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-xl`}><Icon name={s.i} cls="w-8 h-8 text-white" /></div>
-                                    <h3 className="font-bold text-lg mb-1">{s.n}</h3>
-                                    <p className="text-gray-400 text-[10px]">{s.d}</p>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
+            const fileTypes = ["فروض الفصل 1", "فروض الفصل 2", "فروض الفصل 3", "الاختبارات", "الملخصات", "دروس وتمارين"];
 
-            if (v === 'types') return (
-                <div className="min-h-screen p-6 bg-slate-900 text-center text-white">
-                    <div className="max-w-5xl mx-auto">
-                        <button onClick={() => setV('subjects')} className="glass px-6 py-2 rounded-2xl mb-8">← رجوع</button>
-                        <h1 className="text-4xl font-black mb-10 italic">أقسام {sub?.n}</h1>
-                        <div className="grid md:grid-cols-3 gap-6">
-                            {types.map((t, i) => (
-                                <button key={i} onClick={() => { setTyp(t); setV('files'); }} className="glass p-8 rounded-[40px] hover:border-cyan-400 transition-all transform hover:scale-105">
-                                    <div className={`bg-gradient-to-tr ${t.c} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl`}><Icon name={t.i} cls="w-8 h-8 text-white" /></div>
-                                    <h3 className="text-xl font-black">{t.n}</h3>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
+            const educationLevels = [
+                {
+                    title: "التعليم الابتدائي",
+                    gradient: "from-emerald-500 to-teal-500",
+                    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=500",
+                    levels: ["1 ابتدائي", "2 ابتدائي", "3 ابتدائي", "4 ابتدائي", "5 ابتدائي"]
+                },
+                {
+                    title: "التعليم المتوسط",
+                    gradient: "from-blue-500 to-cyan-500",
+                    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=500",
+                    levels: ["1 متوسط", "2 متوسط", "3 متوسط", "4 متوسط", "BEM"]
+                },
+                {
+                    title: "التعليم الثانوي",
+                    gradient: "from-purple-500 to-pink-500",
+                    image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800",
+                    levels: ["السنة 1 ثانوي", "السنة 2 ثانوي", "السنة 3 ثانوي"]
+                },
+                {
+                    title: "منوعات تعليمية",
+                    gradient: "from-pink-500 to-rose-500",
+                    image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=500",
+                    isInfo: true
+                }
+            ];
 
-            const currentFiles = allFiles.filter(f => f.lvl === lv && f.sub === sub?.n && f.typ === typ?.n);
+            const resetToMain = () => {
+                setSelYear(null);
+                setSelBranch(null);
+                setSelSubject(null);
+                setSelType(null);
+                setView('landing');
+            };
+
+            // الحصول على قائمة السنوات
+            const allYears = Object.keys(database);
 
             return (
-                <div className="min-h-screen p-6 bg-slate-900 text-white">
-                    {openFileUrl && (
-                        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black p-4">
-                            <div className="glass w-full h-full max-w-5xl rounded-[40px] overflow-hidden flex flex-col modal-enter border-2 border-white/10">
-                                <div className="p-4 flex justify-between items-center border-b border-white/10">
-                                    <span className="font-bold">👀 معاينة الملف</span>
-                                    <button onClick={() => setOpenFileUrl(null)} className="bg-red-500/20 text-red-500 px-4 py-2 rounded-xl hover:bg-red-500 hover:text-white transition-all">إغلاق</button>
+                <div style={{position: 'relative', minHeight: '100vh', color: 'white'}}>
+                    {/* Header */}
+                    <header style={{
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 50,
+                        background: 'rgba(15, 23, 42, 0.7)',
+                        backdropFilter: 'blur(20px)',
+                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                        padding: '1.5rem 1rem'
+                    }}>
+                        <div style={{maxWidth: '1200px', margin: '0 auto', textAlign: 'center'}}>
+                            <h1 className="gradient-text" style={{fontSize: '1.8rem', fontWeight: 900, marginBottom: '0.5rem'}}>
+                                موقع HMD، تفوقك الدراسي يبدأ من هنا !
+                            </h1>
+                            <p style={{color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'}}>
+                                <Icon name="sparkles" className="w-5 h-5" />
+                                الموقع الأول لتحضير الفروض والاختبارات في الجزائر
+                            </p>
+                        </div>
+                    </header>
+
+                    {/* Floating Upload Button */}
+                    <button 
+                        className="floating-btn"
+                        onClick={() => setShowPasswordModal(true)}
+                        title="رفع ملف جديد"
+                    >
+                        <Icon name="plus" className="w-6 h-6" />
+                    </button>
+
+                    {/* Password Modal */}
+                    {showPasswordModal && (
+                        <div className="modal-overlay" onClick={closeModals}>
+                            <div className="modal-box" onClick={e => e.stopPropagation()}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
+                                    <h3 className="gradient-text" style={{fontSize: '1.5rem', fontWeight: 'bold'}}>
+                                        تسجيل الدخول
+                                    </h3>
+                                    <button onClick={closeModals} style={{background: 'transparent', border: 'none', color: 'white', cursor: 'pointer'}}>
+                                        <Icon name="x" className="w-6 h-6" />
+                                    </button>
                                 </div>
-                                <iframe src={openFileUrl} className="w-full flex-grow border-none"></iframe>
+
+                                {uploadMessage.text && uploadMessage.type === 'error' && (
+                                    <div className="error-message">
+                                        {uploadMessage.text}
+                                    </div>
+                                )}
+
+                                <div style={{textAlign: 'center', marginBottom: '1.5rem'}}>
+                                    <div style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        margin: '0 auto 1rem',
+                                        borderRadius: '50%',
+                                        background: 'rgba(139, 92, 246, 0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        border: '2px solid rgba(139, 92, 246, 0.4)'
+                                    }}>
+                                        <Icon name="lock" className="w-10 h-10" style={{color: '#a78bfa'}} />
+                                    </div>
+                                    <p style={{color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem'}}>
+                                        أدخل كلمة المرور للوصول إلى لوحة الرفع
+                                    </p>
+                                </div>
+
+                                <input 
+                                    type="password"
+                                    className="input-field"
+                                    placeholder="كلمة المرور"
+                                    value={passwordInput}
+                                    onChange={e => setPasswordInput(e.target.value)}
+                                    onKeyPress={e => e.key === 'Enter' && handlePasswordSubmit()}
+                                    autoFocus
+                                />
+
+                                <div style={{display: 'flex', gap: '0.75rem'}}>
+                                    <button className="btn-primary" style={{flex: 1}} onClick={handlePasswordSubmit}>
+                                        دخول
+                                    </button>
+                                    <button className="btn-secondary" style={{flex: 1}} onClick={closeModals}>
+                                        إلغاء
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}
-                    <div className="max-w-4xl mx-auto">
-                        <button onClick={() => setV('types')} className="glass px-6 py-2 rounded-2xl mb-8">← رجوع</button>
-                        <div className="glass p-8 rounded-[40px] mb-8 flex justify-between items-center">
-                            <div>
-                                <h1 className="text-3xl font-black text-indigo-400">{typ?.n}</h1>
-                                <p className="text-gray-400">{sub?.n} - {lv === 'BEM' ? 'شهادة BEM' : `السنة ${lv} متوسط`}</p>
-                            </div>
-                            <div className="bg-white/5 p-4 rounded-3xl border border-white/10 text-center min-w-[100px]">
-                                <span className="text-2xl font-black block">{currentFiles.length}</span>
-                                <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">ملف</span>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            {currentFiles.length === 0 ? <p className="text-center py-10 text-gray-500 italic">لا توجد ملفات في هذا القسم حالياً.</p> :
-                                currentFiles.map(f => (
-                                    <div key={f.id} className="glass p-6 rounded-[30px] flex justify-between items-center gap-4 hover:border-green-500/50 transition-all hover:bg-white/[0.07]">
-                                        <div className="flex items-center gap-4">
-                                            <div className="bg-red-500/10 p-3 rounded-xl"><Icon name="file-text" cls="w-6 h-6 text-red-500" /></div>
-                                            <h3 className="font-bold text-lg">{f.name}</h3>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => setOpenFileUrl(formatDriveUrl(f.url, 'preview'))} className="bg-white/5 p-3 rounded-xl hover:bg-indigo-600 transition-all"><Icon name="eye" cls="w-5 h-5" /></button>
-                                            <button onClick={() => window.open(formatDriveUrl(f.url, 'download'), '_blank')} className="bg-green-600/20 text-green-500 p-3 rounded-xl hover:bg-green-600 hover:text-white transition-all"><Icon name="download" cls="w-5 h-5" /></button>
-                                        </div>
+
+                    {/* Upload Modal */}
+                    {showUploadModal && (
+                        <div className="modal-overlay" onClick={!isUploading ? closeModals : null}>
+                            <div className="modal-box" onClick={e => e.stopPropagation()}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
+                                    <h3 className="gradient-text" style={{fontSize: '1.5rem', fontWeight: 'bold'}}>
+                                        رفع ملف جديد
+                                    </h3>
+                                    {!isUploading && (
+                                        <button onClick={closeModals} style={{background: 'transparent', border: 'none', color: 'white', cursor: 'pointer'}}>
+                                            <Icon name="x" className="w-6 h-6" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {uploadMessage.text && (
+                                    <div className={uploadMessage.type === 'success' ? 'success-message' : 'error-message'}>
+                                        {uploadMessage.text}
                                     </div>
-                                ))
-                            }
+                                )}
+
+                                {/* Upload Mode Tabs */}
+                                <div className="upload-option-tabs">
+                                    <div 
+                                        className={`upload-tab ${uploadMode === 'file' ? 'active' : ''}`}
+                                        onClick={() => !isUploading && setUploadMode('file')}
+                                        style={{cursor: isUploading ? 'not-allowed' : 'pointer', opacity: isUploading ? 0.5 : 1}}
+                                    >
+                                        📄 رفع ملف PDF
+                                    </div>
+                                    <div 
+                                        className={`upload-tab ${uploadMode === 'link' ? 'active' : ''}`}
+                                        onClick={() => !isUploading && setUploadMode('link')}
+                                        style={{cursor: isUploading ? 'not-allowed' : 'pointer', opacity: isUploading ? 0.5 : 1}}
+                                    >
+                                        🔗 رابط الملف
+                                    </div>
+                                </div>
+
+                                {uploadMode === 'file' ? (
+                                    <div className="file-input-wrapper">
+                                        <input 
+                                            type="file"
+                                            id="fileInput"
+                                            accept=".pdf"
+                                            onChange={handleFileSelect}
+                                            disabled={isUploading}
+                                        />
+                                        <label 
+                                            htmlFor="fileInput" 
+                                            className={`file-input-label ${selectedFile ? 'has-file' : ''}`}
+                                            style={{cursor: isUploading ? 'not-allowed' : 'pointer', opacity: isUploading ? 0.5 : 1}}
+                                        >
+                                            {selectedFile ? (
+                                                <>
+                                                    <Icon name="file" className="w-5 h-5" />
+                                                    <span>{selectedFile.name}</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Icon name="plus" className="w-5 h-5" />
+                                                    <span>اختر ملف PDF</span>
+                                                </>
+                                            )}
+                                        </label>
+                                    </div>
+                                ) : (
+                                    <input 
+                                        className="input-field"
+                                        placeholder="رابط الملف (Google Drive أو أي رابط مباشر)"
+                                        value={newFile.url}
+                                        onChange={e => setNewFile({...newFile, url: e.target.value})}
+                                        disabled={isUploading}
+                                    />
+                                )}
+
+                                {/* Progress Bar */}
+                                {isUploading && uploadProgress > 0 && (
+                                    <div className="progress-bar-container">
+                                        <div className="progress-bar" style={{width: `${uploadProgress}%`}}></div>
+                                    </div>
+                                )}
+
+                                <input 
+                                    className="input-field"
+                                    placeholder="اسم الملف (مثال: فرض رقم 1)"
+                                    value={newFile.name}
+                                    onChange={e => setNewFile({...newFile, name: e.target.value})}
+                                    disabled={isUploading}
+                                />
+
+                                <select 
+                                    className="input-field"
+                                    value={newFile.year}
+                                    onChange={e => setNewFile({...newFile, year: e.target.value})}
+                                    disabled={isUploading}
+                                >
+                                    <option value="">اختر السنة / المستوى</option>
+                                    {allYears.map(year => (
+                                        <option key={year} value={year}>{year}</option>
+                                    ))}
+                                </select>
+
+                                <select 
+                                    className="input-field"
+                                    value={newFile.subject}
+                                    onChange={e => setNewFile({...newFile, subject: e.target.value})}
+                                    disabled={!newFile.year || isUploading}
+                                >
+                                    <option value="">اختر المادة</option>
+                                    {newFile.year && database[newFile.year]?.map(subject => (
+                                        <option key={subject} value={subject}>{subject}</option>
+                                    ))}
+                                </select>
+
+                                <select 
+                                    className="input-field"
+                                    value={newFile.type}
+                                    onChange={e => setNewFile({...newFile, type: e.target.value})}
+                                    disabled={isUploading}
+                                >
+                                    <option value="">اختر نوع الملف</option>
+                                    {fileTypes.map(type => (
+                                        <option key={type} value={type}>{type}</option>
+                                    ))}
+                                </select>
+
+                                <div style={{display: 'flex', gap: '0.75rem', marginTop: '1rem'}}>
+                                    <button 
+                                        className="btn-primary" 
+                                        style={{flex: 1, opacity: isUploading ? 0.7 : 1, cursor: isUploading ? 'not-allowed' : 'pointer'}} 
+                                        onClick={handleUpload}
+                                        disabled={isUploading}
+                                    >
+                                        {isUploading ? `جاري الرفع... ${uploadProgress}%` : 'نشر الملف'}
+                                    </button>
+                                    {!isUploading && (
+                                        <button className="btn-secondary" style={{flex: 1}} onClick={closeModals}>
+                                            إلغاء
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    <main style={{maxWidth: '1400px', margin: '0 auto', padding: '3rem 1rem', position: 'relative', zIndex: 1}}>
+                        {/* Landing View */}
+                        {view === 'landing' && (
+                            <div className="fade-in">
+                                <div style={{textAlign: 'center', marginBottom: '4rem'}}>
+                                    <h2 className="gradient-text" style={{fontSize: 'clamp(2.5rem, 8vw, 5rem)', fontWeight: 900, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '-0.02em'}}>
+                                        HMD EDUCATIONAL
+                                    </h2>
+                                    <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'}}>
+                                        <Icon name="sparkles" className="w-5 h-5" />
+                                        المحتوى التعليمي الشامل لجميع الأطوار
+                                    </p>
+                                </div>
+
+                                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem'}}>
+                                    {educationLevels.map((level, idx) => (
+                                        <div key={level.title} className={`glass-card fade-in stagger-${(idx % 4) + 1}`} style={{overflow: 'hidden', cursor: level.isInfo ? 'default' : 'pointer'}}>
+                                            <div className="portal-img">
+                                                <img src={level.image} alt={level.title} />
+                                            </div>
+                                            <div style={{padding: '1.5rem'}}>
+                                                <h2 className="gradient-text" style={{fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '1.5rem'}}>
+                                                    {level.title}
+                                                </h2>
+                                                {!level.isInfo ? (
+                                                    <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
+                                                        {level.levels.map(l => (
+                                                            <button
+                                                                key={l}
+                                                                onClick={() => {
+                                                                    if (l === "السنة 1 ثانوي" || l === "السنة 2 ثانوي" || l === "السنة 3 ثانوي") {
+                                                                        setSelYear(l);
+                                                                        setView('branches');
+                                                                    } else {
+                                                                        setSelYear(l);
+                                                                        setSelBranch(null);
+                                                                        setView('subjects');
+                                                                    }
+                                                                }}
+                                                                style={{
+                                                                    width: '100%',
+                                                                    textAlign: 'right',
+                                                                    padding: '0.75rem 1rem',
+                                                                    color: 'rgba(255,255,255,0.8)',
+                                                                    borderRadius: '0.75rem',
+                                                                    transition: 'all 0.3s',
+                                                                    fontWeight: '500',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'space-between',
+                                                                    background: 'transparent',
+                                                                    border: 'none',
+                                                                    cursor: 'pointer'
+                                                                }}
+                                                                onMouseEnter={(e) => {
+                                                                    e.target.style.background = 'rgba(255,255,255,0.1)';
+                                                                    e.target.style.color = 'white';
+                                                                }}
+                                                                onMouseLeave={(e) => {
+                                                                    e.target.style.background = 'transparent';
+                                                                    e.target.style.color = 'rgba(255,255,255,0.8)';
+                                                                }}
+                                                            >
+                                                                <span>{l === "BEM" ? "شهادة التعليم المتوسط" : l.includes("ثانوي") ? (l.replace("السنة ", "") === "3 ثانوي" ? "البكالوريا BAC" : l) : `السنة ${l}`}</span>
+                                                                <Icon name="arrow-left" className="w-4 h-4" />
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
+                                                        {["تنظيم الوقت", "منهجية الإجابة", "نصائح الامتحانات"].map(item => (
+                                                            <div key={item} style={{padding: '0.75rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.8)', fontWeight: '500'}}>
+                                                                {item}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Branches View */}
+                        {view === 'branches' && (
+                            <div className="fade-in">
+                                <div style={{textAlign: 'center', marginBottom: '3rem'}}>
+                                    <button onClick={resetToMain} className="btn-primary" style={{marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem'}}>
+                                        <Icon name="arrow-right" className="w-5 h-5" />
+                                        العودة للرئيسية
+                                    </button>
+                                    <h2 className="gradient-text" style={{fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 900, marginBottom: '0.5rem'}}>
+                                        اختر الشعبة
+                                    </h2>
+                                    <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '1.1rem'}}>{selYear}</p>
+                                </div>
+
+                                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', maxWidth: '1000px', margin: '0 auto'}}>
+                                    {(selYear === "السنة 1 ثانوي" 
+                                        ? ["1 ثانوي جذع مشترك علوم وتكنولوجيا", "1 ثانوي جذع مشترك آداب"]
+                                        : ["علوم تجريبية", "رياضيات", "تقني رياضي - هندسة ميكانيكية", "تقني رياضي - هندسة كهربائية", "تقني رياضي - هندسة مدنية", "تقني رياضي - هندسة طرائق", "تسيير واقتصاد", "آداب وفلسفة", "لغات أجنبية"]
+                                    ).map((branch, idx) => (
+                                        <div 
+                                            key={branch}
+                                            className={`glass-card fade-in stagger-${(idx % 3) + 1}`}
+                                            onClick={() => { setSelBranch(branch); setView('subjects'); }}
+                                            style={{padding: '2rem', textAlign: 'center', cursor: 'pointer'}}
+                                        >
+                                            <div className="icon-wrapper" style={{margin: '0 auto 1rem'}}>
+                                                <Icon name="graduation" className="w-8 h-8" style={{color: '#a78bfa'}} />
+                                            </div>
+                                            <h3 style={{fontWeight: 'bold', color: 'rgba(255,255,255,0.9)'}}>
+                                                {branch}
+                                            </h3>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Subjects View */}
+                        {view === 'subjects' && (
+                            <div className="fade-in">
+                                <div style={{textAlign: 'center', marginBottom: '3rem'}}>
+                                    <button 
+                                        onClick={() => setView(selBranch ? 'branches' : 'landing')}
+                                        className="btn-primary"
+                                        style={{marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem'}}
+                                    >
+                                        <Icon name="arrow-right" className="w-5 h-5" />
+                                        العودة للخلف
+                                    </button>
+                                    <h2 className="gradient-text" style={{fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 900, marginBottom: '0.5rem'}}>
+                                        {selBranch || selYear}
+                                    </h2>
+                                    <p style={{color: 'rgba(255,255,255,0.6)'}}>اختر المادة للمتابعة</p>
+                                </div>
+
+                                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', maxWidth: '1200px', margin: '0 auto'}}>
+                                    {(database[selBranch || selYear] || []).map((subject, idx) => (
+                                        <div 
+                                            key={subject}
+                                            className={`glass-card fade-in stagger-${(idx % 4) + 1}`}
+                                            onClick={() => { setSelSubject(subject); setView('types'); }}
+                                            style={{padding: '1.5rem', textAlign: 'center', cursor: 'pointer'}}
+                                        >
+                                            <div className="icon-wrapper" style={{margin: '0 auto 1rem', width: '48px', height: '48px'}}>
+                                                <Icon name="book" className="w-6 h-6" style={{color: '#818cf8'}} />
+                                            </div>
+                                            <span style={{fontWeight: '600', fontSize: '0.9rem', color: 'rgba(255,255,255,0.9)', display: 'block'}}>
+                                                {subject}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Types View */}
+                        {view === 'types' && (
+                            <div className="fade-in">
+                                <div style={{textAlign: 'center', marginBottom: '3rem'}}>
+                                    <button 
+                                        onClick={() => setView('subjects')}
+                                        className="btn-primary"
+                                        style={{marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem'}}
+                                    >
+                                        <Icon name="arrow-right" className="w-5 h-5" />
+                                        العودة للمواد
+                                    </button>
+                                    <h2 className="gradient-text" style={{fontSize: 'clamp(2rem, 6vw, 3rem)', fontWeight: 900, marginBottom: '0.5rem'}}>
+                                        {selSubject}
+                                    </h2>
+                                    <p style={{color: 'rgba(255,255,255,0.6)'}}>اختر نوع المحتوى</p>
+                                </div>
+
+                                <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', maxWidth: '1000px', margin: '0 auto'}}>
+                                    {fileTypes.map((type, idx) => (
+                                        <div 
+                                            key={type}
+                                            className={`glass-card fade-in stagger-${(idx % 3) + 1}`}
+                                            onClick={() => { setSelType(type); setView('files'); }}
+                                            style={{padding: '2.5rem', textAlign: 'center', cursor: 'pointer'}}
+                                        >
+                                            <div className="icon-wrapper" style={{margin: '0 auto 1rem', width: '64px', height: '64px'}}>
+                                                <Icon name="file" className="w-8 h-8" style={{color: '#a78bfa'}} />
+                                            </div>
+                                            <h3 style={{fontSize: '1.25rem', fontWeight: 'bold', color: 'rgba(255,255,255,0.9)'}}>
+                                                {type}
+                                            </h3>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Files View */}
+                        {view === 'files' && (
+                            <div className="fade-in">
+                                <div style={{textAlign: 'center', marginBottom: '3rem'}}>
+                                    <button 
+                                        onClick={() => setView('types')}
+                                        className="btn-primary"
+                                        style={{marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem'}}
+                                    >
+                                        <Icon name="arrow-right" className="w-5 h-5" />
+                                        العودة للأنواع
+                                    </button>
+                                    <h2 className="gradient-text" style={{fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: 900, marginBottom: '0.5rem'}}>
+                                        {selType}
+                                    </h2>
+                                    <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.95rem'}}>{selSubject} - {selBranch || selYear}</p>
+                                </div>
+
+                                <div style={{maxWidth: '800px', margin: '0 auto'}}>
+                                    {isLoading ? (
+                                        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                                            {[1,2,3].map(i => (
+                                                <div key={i} style={{height: '96px', background: 'rgba(255,255,255,0.05)', borderRadius: '1rem', animation: 'pulse 1.5s infinite'}} />
+                                            ))}
+                                        </div>
+                                    ) : allFiles.filter(f => 
+                                        f.year === (selBranch || selYear) && 
+                                        f.subject === selSubject && 
+                                        f.type === selType
+                                    ).length > 0 ? (
+                                        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                                            {allFiles
+                                                .filter(f => f.year === (selBranch || selYear) && f.subject === selSubject && f.type === selType)
+                                                .map((file, idx) => (
+                                                    <div 
+                                                        key={file.id}
+                                                        className={`glass-card fade-in stagger-${(idx % 3) + 1}`}
+                                                        onClick={() => window.open(file.url, '_blank')}
+                                                        style={{padding: '1.5rem', cursor: 'pointer'}}
+                                                    >
+                                                        <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+                                                            <div className="icon-wrapper" style={{flexShrink: 0}}>
+                                                                <Icon name="file" className="w-6 h-6" style={{color: '#a78bfa'}} />
+                                                            </div>
+                                                            <div style={{flex: 1, minWidth: 0}}>
+                                                                <h3 style={{fontWeight: '600', color: 'rgba(255,255,255,0.9)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: '0.25rem'}}>
+                                                                    {file.name}
+                                                                </h3>
+                                                                <p style={{fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)'}}>
+                                                                    {new Date(file.date?.seconds * 1000).toLocaleDateString('ar-DZ')}
+                                                                </p>
+                                                            </div>
+                                                            <Icon name="arrow-left" className="w-5 h-5" style={{color: 'rgba(255,255,255,0.4)', flexShrink: 0}} />
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                    ) : (
+                                        <div style={{textAlign: 'center', padding: '5rem 0'}}>
+                                            <div className="glass-card" style={{display: 'inline-block', padding: '3rem', maxWidth: '400px'}}>
+                                                <Icon name="file" className="w-16 h-16" style={{color: 'rgba(255,255,255,0.3)', margin: '0 auto 1rem', display: 'block'}} />
+                                                <p style={{color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem', fontWeight: '600', marginBottom: '0.5rem'}}>
+                                                    لا توجد ملفات متاحة حالياً
+                                                </p>
+                                                <p style={{color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem'}}>
+                                                    سيتم إضافة المحتوى قريباً
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Footer */}
+                    <footer style={{padding: '2rem 1rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '5rem'}}>
+                        <div className="glass-card" style={{display: 'inline-block', padding: '1rem 2rem'}}>
+                            <p style={{color: 'rgba(255,255,255,0.6)', fontWeight: '500'}}>
+                                © 2025 HMD EDUCATIONAL - جميع الحقوق محفوظة
+                            </p>
+                        </div>
+                    </footer>
                 </div>
             );
         };
