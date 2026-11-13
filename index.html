@@ -85,11 +85,19 @@ dialog .dh{display:flex;justify-content:space-between;align-items:center;padding
 dialog iframe{width:100%;height:calc(100% - 52px);border:0;background:#fff}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel2);border:1px solid var(--accent);padding:10px 22px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:99}
 #toast.show{opacity:1;transform:translateX(-50%)}
+.form{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px;max-width:640px;margin:0 auto 16px}
+.form label{display:grid;gap:6px;font-size:.88rem;color:var(--muted)}
+.form input,.form select{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 12px;font:inherit;color:var(--text)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form .btn{padding:11px;font-size:1rem}
 footer{text-align:center;color:var(--muted);font-size:.82rem;padding:24px 12px}
 @media(max-width:900px){aside{position:fixed;right:0;top:0;z-index:50;transform:translateX(100%);transition:transform .25s}aside.open{transform:none}.menu-btn{display:block}.grid{grid-template-columns:1fr 1fr}.cats{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.stages,.grid{grid-template-columns:1fr}main{padding:16px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <aside id="side"></aside>
@@ -102,7 +110,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;padding:24px 12px}
     </div>
   </header>
   <main id="view"></main>
-  <footer>جميع الحقوق محفوظة © <span id="yr"></span></footer>
+  <footer>جميع الحقوق محفوظة © <span id="yr"></span> · <a href="#/admin" style="opacity:.45">إدارة</a></footer>
 </div>
 <dialog id="dlg"><div class="dh"><b id="dt"></b><button class="btn ghost" onclick="dlg.close()">إغلاق ✕</button></div><iframe id="fr" title="معاينة الملف"></iframe></dialog>
 <div id="toast"></div>
@@ -144,21 +152,7 @@ const TERMS = {1:"الفصل الأول",2:"الفصل الثاني",3:"الفص
 
 /* الملفات. المفتاح: متوسط "السنة/المادة" — ثانوي "السنة/الشعبة/المادة"
    cat: homework | exam | exercise | summary ، term: 1 | 2 | 3 ، url: رابط الـPDF (فارغ = قريباً) */
-const FILES = {
-  "4am/math":[
-    {t:"فرض الفصل الأول – نموذج 1",cat:"homework",term:1,url:""},
-    {t:"اختبار الفصل الأول",cat:"exam",term:1,url:""},
-    {t:"اختبار الفصل الثاني",cat:"exam",term:2,url:""},
-    {t:"سلسلة تمارين الحساب على الجذور",cat:"exercise",term:1,url:""},
-    {t:"ملخص المعادلات والمتراجحات",cat:"summary",term:2,url:""}
-  ],
-  "3as/sci/math":[
-    {t:"اختبار الفصل الأول",cat:"exam",term:1,url:""},
-    {t:"فرض الفصل الثاني",cat:"homework",term:2,url:""},
-    {t:"سلسلة تمارين الاستمرارية",cat:"exercise",term:1,url:""},
-    {t:"ملخص الدوال الأسية",cat:"summary",term:2,url:""}
-  ]
-};
+const FILES = {}; // تُحمَّل الآن من Firebase تلقائياً
 
 /* ================= مساعدات ================= */
 const $=s=>document.querySelector(s);
@@ -215,7 +209,7 @@ function streamPage(y,st){
   <div class="banner" style="background:${GROUPS[v.g]}">${v.ic} ${v.n} — ${yearName(y)}</div>`+subjCards(y,st);
 }
 function subjectPage(y,st,s){
-  const k=keyOf(y,st,s), all=filesOf(k).map((f,i)=>({...f,id:k+"#"+i}));
+  const k=keyOf(y,st,s), all=filesOf(k).map((f,i)=>({...f,id:f._id||k+"#"+i}));
   const done=all.filter(f=>ST.done.includes(f.id)).length, pct=all.length?Math.round(done/all.length*100):0;
   const parent=isMid(y)?`<a href="#/${y}">${yearName(y)}</a>`:`<a href="#/${y}">${yearName(y)}</a> / <a href="#/${y}/${st}">${STREAMS[st].n}</a>`;
   const list=all.filter(f=>f.cat===ui.cat&&(!ui.term||f.term==ui.term)&&f.t.includes(ui.q));
@@ -236,10 +230,11 @@ function fileRow(f){
   return `<div class="file ${dn?"done":""}"><span class="t">${esc(f.t)}</span>
    <button class="ib fav ${fv?"on":""}" title="مفضلة" onclick="tog('fav','${f.id}')">${fv?"★":"☆"}</button>
    <button class="ib dn ${dn?"on":""}" title="تم الإنجاز" onclick="tog('done','${f.id}')">✓</button>
+   ${USER&&f._id?`<button class="ib" title="حذف" onclick="del('${f._id}')">🗑</button>`:""}
    <button class="btn ghost ${f.url?"":"off"}" onclick="preview('${f.id}')">معاينة</button>
    <a class="btn ${f.url?"":"off"}" ${f.url?`href="${esc(f.url)}" download target="_blank" rel="noopener"`:""}>${f.url?"تحميل":"قريباً"}</a></div>`;
 }
-function byId(id){const[k,i]=id.split("#");return{k,f:(FILES[k]||[])[i]}}
+function byId(id){for(const k in FILES){const i=FILES[k].findIndex((f,j)=>(f._id||k+"#"+j)===id);if(i>=0)return{k,f:FILES[k][i]}}return{}}
 function listPage(type){
   const ids=ST[type], title=type==="fav"?"⭐ المفضلة":"✅ الملفات التي أنجزتها";
   return `<div class="crumbs"><a href="#/">الرئيسية</a> / ${title}</div><div class="banner">${title}</div>
@@ -275,11 +270,83 @@ $("#q").addEventListener("input",e=>{
 });
 document.addEventListener("click",e=>{if(!e.target.closest(".sbox"))$("#res").style.display="none"});
 
+/* ================= Firebase + لوحة الإدارة ================= */
+const CFG={
+  firebase:{apiKey:"",authDomain:"",projectId:"",appId:""},   // الصق إعدادات Firebase هنا
+  cloudinary:{cloud:"",preset:""}                             // اسم الحساب + upload preset (Unsigned)
+};
+let DB=null,AUTH=null,USER=null;
+const DB_OK=!!CFG.firebase.apiKey;
+if(DB_OK){firebase.initializeApp(CFG.firebase);DB=firebase.firestore();AUTH=firebase.auth();AUTH.onAuthStateChanged(u=>{USER=u;render(1)})}
+function loadRemote(){
+  if(!DB_OK)return;
+  DB.collection("files").get().then(sn=>{
+    sn.forEach(d=>{const x=d.data();(FILES[x.key]=FILES[x.key]||[]).push({...x,_id:d.id})});
+    sidebar();render(1);
+  }).catch(console.error);
+}
+let AD={lv:"mid",y:"1am",st:"st",s:"math",cat:"exam",term:1};
+function selHtml(){
+  const mid=AD.lv==="mid",yrs=Object.entries(LEVELS[AD.lv].years);
+  if(!LEVELS[AD.lv].years[AD.y])AD.y=yrs[0][0];
+  const sts=Object.entries(STREAMS).filter(([k,v])=>v.y.includes(AD.y));
+  if(!mid&&!sts.find(([k])=>k===AD.st))AD.st=sts[0][0];
+  const subs=subjectsOf(AD.y,mid?null:AD.st);
+  if(!subs.includes(AD.s))AD.s=subs[0];
+  const S=(f,lab,o,cur)=>`<label>${lab}<select onchange="AD.${f}=this.value;$('#asel').innerHTML=selHtml()">${o.map(([v,l])=>`<option value="${v}" ${v==cur?"selected":""}>${l}</option>`).join("")}</select></label>`;
+  return S("lv","المرحلة",[["mid","المتوسط"],["sec","الثانوي"]],AD.lv)+S("y","السنة",yrs,AD.y)
+   +(mid?"":S("st","الشعبة",sts.map(([k,v])=>[k,v.n]),AD.st))+S("s","المادة",subs.map(x=>[x,SUBJ[x][0]]),AD.s)
+   +S("cat","النوع",Object.entries(CATS).map(([k,v])=>[k,v[0]]),AD.cat)+S("term","الفصل",Object.entries(TERMS),AD.term);
+}
+function adminPage(){
+  const head='<div class="crumbs"><a href="#/">الرئيسية</a> / الإدارة</div>';
+  if(!DB_OK)return head+'<div class="banner">لوحة الإدارة</div><div class="empty">أكمل إعدادات Firebase داخل CFG في الكود أولاً.</div>';
+  if(!USER)return head+`<div class="banner">🔐 دخول الإدارة</div>
+   <form class="form" onsubmit="login(event)"><input id="em" type="email" placeholder="البريد الإلكتروني" required><input id="pw" type="password" placeholder="كلمة السر" required><button class="btn">دخول</button></form>`;
+  return head+`<div class="banner">➕ إضافة ملفات</div>
+  <div class="form"><div class="frow" id="asel">${selHtml()}</div>
+   <label>عنوان الملف (يُستخدم عند رفع ملف واحد، وإلا يُؤخذ اسم الملف)<input id="af-t" placeholder="مثال: اختبار الفصل الأول"></label>
+   <label>اختر ملفات PDF (يمكن اختيار عدة ملفات)<input id="af-file" type="file" accept=".pdf" multiple></label>
+   <label>أو الصق رابطاً مباشراً<input id="af-url" placeholder="https://..."></label>
+   <button class="btn" id="af-btn" onclick="upload()">رفع وحفظ</button></div>
+  <div style="text-align:center"><button class="btn ghost" onclick="AUTH.signOut()">تسجيل الخروج (${esc(USER.email)})</button></div>`;
+}
+async function login(e){e.preventDefault();try{await AUTH.signInWithEmailAndPassword($("#em").value,$("#pw").value);toast("تم الدخول ✅")}catch(x){toast("البريد أو كلمة السر خاطئة")}}
+async function cloudUp(f){
+  if(!CFG.cloudinary.cloud)throw new Error("أكمل إعدادات Cloudinary");
+  const fd=new FormData();fd.append("file",f);fd.append("upload_preset",CFG.cloudinary.preset);
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${CFG.cloudinary.cloud}/auto/upload`,{method:"POST",body:fd});
+  const j=await r.json();if(!j.secure_url)throw new Error(j.error&&j.error.message||"فشل الرفع");return j.secure_url;
+}
+async function upload(){
+  const files=[...$("#af-file").files],url=$("#af-url").value.trim(),title=$("#af-t").value.trim();
+  if(!files.length&&!url)return toast("اختر ملفاً أو الصق رابطاً");
+  const key=keyOf(AD.y,AD.st,AD.s),btn=$("#af-btn"),items=files.length?files:[null];
+  btn.disabled=true;
+  try{
+    for(let i=0;i<items.length;i++){
+      const f=items[i];btn.textContent=`جارٍ الرفع ${i+1}/${items.length}...`;
+      const link=f?await cloudUp(f):url;
+      const t=items.length===1&&title?title:(f?f.name.replace(/\.[^.]+$/,""):"ملف");
+      const doc={key,t,cat:AD.cat,term:Number(AD.term),url:link,ts:Date.now()};
+      const r=await DB.collection("files").add(doc);
+      (FILES[key]=FILES[key]||[]).push({...doc,_id:r.id});
+    }
+    toast("تمت الإضافة ✅");$("#af-file").value="";$("#af-t").value="";$("#af-url").value="";sidebar();
+  }catch(x){console.error(x);toast("تعذّر الرفع: "+x.message)}
+  btn.disabled=false;btn.textContent="رفع وحفظ";
+}
+async function del(id){
+  if(!confirm("حذف هذا الملف نهائياً؟"))return;
+  try{await DB.collection("files").doc(id).delete();for(const k in FILES)FILES[k]=FILES[k].filter(f=>f._id!==id);sidebar();render(1);toast("تم الحذف")}catch(x){toast("تعذّر الحذف")}
+}
+
 /* ================= الراوتر ================= */
 function render(keep,focusQ){
   const p=location.hash.slice(1).split("/").filter(Boolean),[a,b,c]=p;
   const sy=scrollY;let h;
   if(!a)h=home();
+  else if(a==="admin")h=adminPage();
   else if(a==="fav"||a==="done")h=listPage(a);
   else if(!(LEVELS.mid.years[a]||LEVELS.sec.years[a]))h=home();
   else if(isMid(a))h=b&&SUBJ[b]?subjectPage(a,null,b):yearPage(a);
@@ -292,7 +359,7 @@ function render(keep,focusQ){
 }
 addEventListener("hashchange",()=>{ui={cat:"exam",term:0,q:"",group:"الكل"};$("#res").style.display="none";render()});
 $("#yr").textContent=new Date().getFullYear();
-sidebar();render();
+sidebar();render();loadRemote();
 </script>
 </body>
 </html>
